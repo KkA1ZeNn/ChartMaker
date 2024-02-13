@@ -43,17 +43,18 @@
          height: 90vh;
          display: flex;
          align-items: center;
-         justify-content: space-between;
+         justify-content: flex-start;
       }
 
       #generatedValues {
-         width: 100px;
+         width: 6%;
          height: 100%;
          border: 2px solid black;
          display: flex;
          flex-direction: column;
          align-items: center;
          justify-content: space-between;
+         margin-right: 20px;
       }
 
       #description {
@@ -127,11 +128,30 @@
          border-right: 2px solid gray;
       }
 
-      #chartdiv {
-         width: 1000px;
+      #graphics {
+         width: 80%;
          height: 100%;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: space-between;
+      }
+
+      .graphicsRow {
+         width: 100%;
+         height: 50%;
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+      }
+
+      .graph {
+         width: 50%;
+         height: 100%;
+      }
+
+      #chartdiv {
          border: 2px solid black;
-         margin: auto;
       }
 
       #values::-webkit-scrollbar {
@@ -176,7 +196,16 @@
          </div>
          <div id = "values"></div>
       </div>
-      <div id = "chartdiv"></div>
+      <div id = "graphics">
+         <div class = "graphicsRow">
+            <div class = "graph"></div>
+            <div class = "graph" id = "chartdiv"></div>
+         </div>
+         <div class = "graphicsRow">
+            <div class = "graph"></div>
+            <div class = "graph"></div>
+         </div>
+      </div>
    </div>
 
    <script>
