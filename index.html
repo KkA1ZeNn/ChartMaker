@@ -246,8 +246,10 @@
                values.push ( newValue );
             }
 
+            temp = countOccurrences(values);
             graph1Creator();
             graph2Creator();
+            graph3Creator()
          }
       })
 
@@ -265,6 +267,8 @@
       //-------------------------------------------------------------------------
       let root; 
       let root2;
+      let root3;
+      let temp;
   
       function graph1Creator() {
          // Define data
@@ -299,9 +303,9 @@
          // Create Y-axis
          yAxis = chart.yAxes.push(
             am5xy.ValueAxis.new(root, {
-               extraTooltipPrecision: 1,
                min: 0,
                max: maxValue >= 1 ? maxValue : 1,
+               maxPrecision: 0,
                renderer: am5xy.AxisRendererY.new(root, {})
             })
          );
@@ -309,7 +313,6 @@
          // Create X-Axis
          xAxis = chart.xAxes.push(
             am5xy.ValueAxis.new(root, {
-               extraTooltipPrecision: 1,
                min: 1,
                max: parseInt(generationCount.value),
                renderer: am5xy.AxisRendererX.new(root, {})
@@ -347,6 +350,7 @@
          let xAxis;
          let chart;
          let maxValue = 0;
+         let maxValue2 = 0;
 
          if (root2) {
             root2.dispose();
@@ -364,44 +368,18 @@
             }) 
          );
 
-         let temp = countOccurrences(values);
          for (key in temp) {
             maxValue = Math.max(maxValue, temp[key]);
+            maxValue2 = Math.max(maxValue2, key);
             data.push({
                "number": parseInt(key),
                "value": temp[key]
             });
          }
 
-         data.push({
-               "number": 5,
-               "value": 37
-            });
-            data.push({
-               "number": 6,
-               "value": 100
-            });
-            data.push({
-               "number": 7,
-               "value": 37
-            });
-            data.push({
-               "number": 8,
-               "value": 100
-            });
-            data.push({
-               "number": 9,
-               "value": 37
-            });
-            data.push({
-               "number": 10,
-               "value": 100
-            });
-
          // Create Y-axis
          yAxis = chart.yAxes.push(
             am5xy.ValueAxis.new(root2, {
-               extraTooltipPrecision: 1,
                min: 0,
                max: maxValue >= 1 ? maxValue : 1,
                renderer: am5xy.AxisRendererY.new(root2, {})
@@ -409,14 +387,23 @@
          );
 
          // Create X-Axis
-         xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root2, {
-            categoryField: "number",
-            renderer: am5xy.AxisRendererX.new(root2, {
-               cellStartLocation: 0.1,
-               cellEndLocation: 0.9
-            }),
-            tooltip: am5.Tooltip.new(root2, {})
-         }));
+         //xAxis = chart.xAxes.push(
+         //   am5xy.ValueAxis.new(root2, {
+         //      min: 0,
+         //      max: maxValue2 >= 1 ? maxValue2 : 1,
+         //      extraMax: 0.3,
+         //      extraMin: 0.3,
+         //      maxPrecision: 0,
+         //      renderer: am5xy.AxisRendererX.new(root2, {})
+         //   })
+         //);
+
+         xAxis = chart.xAxes.push(
+            am5xy.CategoryAxis.new(root2, {
+               categoryField: "number",
+               renderer: am5xy.AxisRendererX.new(root2, {})
+            })
+         );
 
          xAxis.data.setAll(data);
 
@@ -426,16 +413,130 @@
                xAxis: xAxis, 
                yAxis: yAxis, 
                valueYField: "value", 
-               categoryXField: "number"
+               categoryXField: "number",
+               tooltip: am5.Tooltip.new(root2, {
+                  labelText: "{valueY}"
+               })
             }) 
          );
-      
-         yAxis.get("renderer").labels.template.set("fill", series.get("fill"));
 
          series.columns.template.setAll({
-            tooltipText: "{valueY}",
-            width: am5.percent(30),
-            tooltipY: 0
+            width: am5.percent(20)
+         });
+         
+         chart.set("cursor", am5xy.XYCursor.new(root2, {}));
+
+         let cursor = chart.get("cursor");
+         cursor.lineY.setAll({
+            visible: false
+         });
+         cursor.lineX.setAll({
+            visible: false
+         });
+
+         series.data.setAll(data);
+      }
+
+      function graph3Creator() {
+         // Define data
+         let data = [];
+         let yAxis;
+         let xAxis;
+         let chart;
+         let maxValue = 0;
+         let maxValue2 = 0;
+         let teorValue;
+         let otnValue;
+
+         if (root3) {
+            root3.dispose();
+         }
+         root3 = am5.Root.new("graph3");
+         root3.setThemes([
+            am5themes_Animated.new(root3)
+         ]);
+
+         chart = root3.container.children.push( 
+            am5xy.XYChart.new(root3, {
+               panY: false,
+               wheelY: "zoomX",
+               layout: root.verticalLayout
+            }) 
+         );
+
+         for (key in temp) {
+            maxValue = Math.max(maxValue, temp[key]);
+            maxValue2 = Math.max(maxValue2, key);
+            otnValue = temp[key] / parseInt(generationCount.value);
+            if (temp[key] == 1) {
+               teorValue = parseFloat(generatorOptionQ.value);
+            } else {
+               teorValue = 1 - parseFloat(generatorOptionQ.value);
+            }
+            data.push({
+               "number": parseInt(key),
+               "otnValue": otnValue,
+               "teorValue": teorValue
+            });
+         }
+
+         console.log(data);
+
+         // Create Y-axis
+         yAxis = chart.yAxes.push(
+            am5xy.ValueAxis.new(root3, {
+               min: 0,
+               max: maxValue >= 1 ? maxValue : 1,
+               renderer: am5xy.AxisRendererY.new(root3, {})
+            })
+         );
+
+         // Create X-Axis
+         //xAxis = chart.xAxes.push(
+         //   am5xy.ValueAxis.new(root2, {
+         //      min: 0,
+         //      max: maxValue2 >= 1 ? maxValue2 : 1,
+         //      extraMax: 0.3,
+         //      extraMin: 0.3,
+         //      maxPrecision: 0,
+         //      renderer: am5xy.AxisRendererX.new(root2, {})
+         //   })
+         //);
+
+         xAxis = chart.xAxes.push(
+            am5xy.CategoryAxis.new(root3, {
+               categoryField: "number",
+               renderer: am5xy.AxisRendererX.new(root3, {})
+            })
+         );
+
+         xAxis.data.setAll(data);
+
+         var series = chart.series.push( 
+            am5xy.ColumnSeries.new(root3, { 
+               name: "Series",
+               xAxis: xAxis, 
+               yAxis: yAxis, 
+               valueYField: "value", 
+               categoryXField: "number",
+               tooltip: am5.Tooltip.new(root3, {
+                  labelText: "{valueY}"
+               })
+            }) 
+         );
+
+         series.columns.template.setAll({
+            width: am5.percent(20)
+         });
+         
+         chart.set("cursor", am5xy.XYCursor.new(root3, {}));
+
+         let cursor = chart.get("cursor");
+         cursor.lineY.setAll({
+            visible: false
+         });
+         cursor.lineX.setAll({
+            visible: false
          });
 
          series.data.setAll(data);
