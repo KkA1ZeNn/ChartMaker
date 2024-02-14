@@ -158,6 +158,11 @@
          display: none;
       }
 
+      .option {
+         display: none;
+         margin-right: 10px;
+      }
+
    </style>
 </head>
 <body>
@@ -180,7 +185,8 @@
       <input name="count of generations" id = "generationCount" value = "100">
 
       <div id = "options">
-         <input name = "option" class = "option" id = "q" placeholder = "Вероятность успеха Q =" type = "text" style="display: none;">
+         <input name = "option1" class = "option" id = "q" placeholder = "Вероятность успеха Q =" type = "text">
+         <input name = "option2" class = "option" id = "m" placeholder = "Число исходов M =" type = "text">
       </div>
       <button id = "generate">Генерация</button>
    </div>
@@ -215,6 +221,7 @@
       const generateButton = document.querySelector('#generate');
       const generationCount = document.querySelector('#generationCount');
       const generatorOptionQ = document.querySelector('#q');
+      const generatorOptionM = document.querySelector('#m');
       const valuesBar = document.querySelector('#values');
       let errorFlag = true;
       let values = [];
@@ -227,9 +234,13 @@
                break;
 
             case "1.2 Биномиальное":
+               generatorOptionQ.style.display = "block";
+               generatorOptionM.style.display = "block";
+               errorFlag = false;
                break;
          
             default:
+               throw new Error ("Такого метода нет");
                break;
          }
       })
@@ -238,8 +249,17 @@
          if (!errorFlag) {
             valuesBar.innerHTML = ``;
             values = [];
+            let newValue;
             for (let i = 0; i < generationCount.value; i++) {
-               let newValue = bernoulli( parseFloat(generatorOptionQ.value) );
+               switch (generationMethod.value) {
+                  case "1.1 Бернулли":
+                     newValue = bernoulli( parseFloat(generatorOptionQ.value) );
+                     break;
+
+                  case "1.2 Биномиальное":
+                     break;
+               }
+         
                const valueRow = document.createElement('div');
                valueRow.classList.add("valueRow");
                valueRow.innerHTML = `
