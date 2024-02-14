@@ -181,6 +181,7 @@
          <option value="1.1 Бернулли"></option>
          <option value="1.2 Биномиальное"></option>
       </datalist>
+      <button id = "clear">Clear</button>
       <label for="generationCount">Кол-во генер.знач.</label>
       <input name="count of generations" id = "generationCount" value = "100">
 
@@ -219,12 +220,20 @@
       const generationMethodHadler = document.querySelector('#method');
       const generationMethod = document.querySelector('#method');
       const generateButton = document.querySelector('#generate');
+      const clearButton = document.querySelector('#clear');
       const generationCount = document.querySelector('#generationCount');
       const generatorOptionQ = document.querySelector('#q');
       const generatorOptionM = document.querySelector('#m');
       const valuesBar = document.querySelector('#values');
       let errorFlag = true;
       let values = [];
+
+      clearButton.addEventListener('click', () => {
+         generatorOptionQ.style.display = "none";
+         generatorOptionM.style.display = "none";
+         generationMethod.value = "";
+         errorFlag = true;
+      })
 
       generationMethodHadler.addEventListener('change', () => {
          switch (generationMethod.value) {
