@@ -9,4 +9,6 @@
 3) нажмите кнопку генерации
 4) Наслаждайтесь красивыми графиками, которые вы сделали :)
 
+PS: в папке src находится весь проект, но разбитый на файлы, а main.html это тот же проект, но здесь все скрипты в одном месте
+
 ![](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWUzdzVndDh6bm5sc2NtZ2ZpcmgyM2ZucG1lZDMzbTl4d3ZmajQzbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qLytYr0b6Fsjj4MyYm/giphy.gif)

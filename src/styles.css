@@ -1,0 +1,212 @@
+.settingBar {
+   width: 100%;
+   height: 7vh;
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   margin-bottom: 10px;
+}
+
+#options {
+   width: auto;
+   height: 25px;
+   margin-left: 20px;
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+}
+
+#descret {
+   width: auto;
+   height: 100%;
+   align-items: center;
+   justify-content: flex-start;
+}
+
+#descret div {
+   height: 100%;
+   width: 20px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: space-around;
+   border-right: 2px solid black;
+   margin-right: 10px;
+   padding-right: 10px;
+}
+
+#descret div h5 {
+   margin: 0;
+}
+
+#methods {
+   width: 130px;
+}
+
+#generationCount {
+   width: 50px;
+}
+
+#generate {
+   margin-left: 20px;
+}
+
+label {
+   margin: 0px 10px 0px 20px;
+}
+
+#workspace {
+   width: 100%;
+   height: 90vh;
+   display: flex;
+   align-items: top;
+   justify-content: flex-start;
+}
+
+#generatedValues {
+   width: 6%;
+   height: 100%;
+   border: 2px solid black;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: space-between;
+   margin-right: 20px;
+}
+
+#description {
+   width: 100%;
+   height: 12%;
+   border-bottom: 2px solid black;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: space-between;
+}
+
+#description h4 {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   height: 50%;
+   margin: 0;
+   border-bottom: 2px solid black;
+   box-sizing: border-box;
+}
+
+#KX {
+   height: 50%;
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: space-around;
+}
+
+#KX h5 {
+   margin: 0;
+   width: 50%;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+#KX h5:first-child {
+   border-right: 2px solid black;
+}
+
+#values {
+   width: 100%;
+   height: 88%;
+   overflow-y: auto;
+}
+
+.valueRow {
+   height: 7%;
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: space-around;
+   border-bottom: 2px solid gray;
+   box-sizing: border-box;
+}
+
+.valueRow h5 {
+   margin: 0;
+   width: 50%;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.valueRow h5:first-child {
+   border-right: 2px solid gray;
+}
+
+#graphics {
+   width: 80%;
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: space-between;
+}
+
+.graphicsRow {
+   width: 100%;
+   height: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+}
+
+.graph {
+   width: 50%;
+   height: 100%;
+}
+
+#calculated {
+   border: 2px solid black;
+   height: 50%;
+   width: 14%;
+   display: flex;
+   align-items: top;
+   justify-content: space-between;
+}
+
+.calculatedColumn {
+   width: 50%;
+   height: 100%;
+   font-size: 13px;
+   font-weight: bold;
+}
+
+.calculatedColumn:first-child {
+   border-right: 2px solid black;
+}
+
+.calculatedRow {
+   padding-left: 5px;
+   width: 100%;
+   height: 20%;
+   border-bottom: 2px solid black;
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   box-sizing: border-box;
+}
+
+.calculatedRow:last-child {
+   border: none;
+}
+
+#values::-webkit-scrollbar {
+   display: none;
+}
+
+.option {
+   display: none;
+   margin-right: 10px;
+}
