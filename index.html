@@ -65,7 +65,7 @@
          width: 100%;
          height: 90vh;
          display: flex;
-         align-items: center;
+         align-items: top;
          justify-content: flex-start;
       }
 
@@ -173,8 +173,39 @@
          height: 100%;
       }
 
-      #chartdiv {
+      #calculated {
          border: 2px solid black;
+         height: 50%;
+         width: 14%;
+         display: flex;
+         align-items: top;
+         justify-content: space-between;
+      }
+
+      .calculatedColumn {
+         width: 50%;
+         height: 100%;
+         font-size: 13px;
+         font-weight: bold;
+      }
+
+      .calculatedColumn:first-child {
+         border-right: 2px solid black;
+      }
+
+      .calculatedRow {
+         padding-left: 5px;
+         width: 100%;
+         height: 20%;
+         border-bottom: 2px solid black;
+         display: flex;
+         align-items: center;
+         justify-content: flex-start;
+         box-sizing: border-box;
+      }
+
+      .calculatedRow:last-child {
+         border: none;
       }
 
       #values::-webkit-scrollbar {
@@ -241,6 +272,28 @@
             <div class = "graph" id = "graph4"></div>
          </div>
       </div>
+      <div id = "calculated">
+         <div class = "calculatedColumn">
+            <div class="calculatedRow">
+               Математическое ожидание (МО):
+            </div>
+            <div class="calculatedRow">
+               Среднеквадратичное отклонения (СКО):
+            </div>
+            <div class="calculatedRow">
+               Дисперсия:
+            </div>
+            <div class="calculatedRow">
+               Ассиметрия:
+            </div>
+            <div class="calculatedRow">
+               Эксцесс
+            </div>
+         </div>
+         <div class="calculatedColumn" id = "secondColumn">
+
+         </div>
+      </div>
    </div>
 
    <script>
@@ -253,6 +306,7 @@
       const generatorOptionAlpha = document.querySelector('#alpha');
       const generatorOptionDescret = document.querySelector('#descret');
       const valuesBar = document.querySelector('#values');
+      const calculatedColumn = document.querySelector('#secondColumn');
       let values = [];
       let Xi = [];
       let Pi = [];
@@ -319,6 +373,7 @@
             generatorOptionDescret.style.display = "flex";
             valuesBar.innerHTML = ``;
             generatorOptionDescret.innerHTML = ``;
+            calculatedColumn.innerHTML = ``;
             values = [];
             let descretTemp = [];
             let newValue;
@@ -327,8 +382,9 @@
                case "1.1 Бернулли":
                   q = parseFloat(generatorOptionQ.value);
                   if (typeof q !== "number" || q < 0 || q > 1 || generatorOptionQ.value == "") {
-                     throw new Error ("Q должно быть числом от 0 до 1");
                      alert ("Q должно быть числом от 0 до 1");
+                     throw new Error ("Q должно быть числом от 0 до 1");
+                     
                   }
 
                   for (let i = 0; i < generationCount.value; i++) {
@@ -341,12 +397,13 @@
                   q = parseFloat(generatorOptionQ.value);
                   m = parseFloat(generatorOptionM.value);
                   if (typeof q !== "number" || q < 0 || q > 1 || generatorOptionQ.value == "") {
-                     throw new Error ("Q должно быть числом от 0 до 1");
                      alert ("Q должно быть числом от 0 до 1");
+                     throw new Error ("Q должно быть числом от 0 до 1");
+                     
                   }
                   if (typeof m !== "number" || m < 0 || generatorOptionM.value == "") {
-                     throw new Error ("M должно быть числом больше 0");
                      alert ("M должно быть числом больше 0");
+                     throw new Error ("M должно быть числом больше 0");
                   }
 
                   for (let i = 0; i < generationCount.value; i++) {
@@ -358,8 +415,9 @@
                case "1.3 Пуассона":
                   lambda = parseFloat(generatorOptionAlpha.value);
                   if (typeof lambda !== "number" || lambda < 0 || generatorOptionAlpha.value == "") {
-                     throw new Error ("Lamda должно быть числом больше 0");
                      alert ("Lamda должно быть числом больше 0");
+                     throw new Error ("Lamda должно быть числом больше 0");
+                     
                   }
                   for (let i = 0; i < generationCount.value; i++) {
                      newValue = poisson(lambda);
@@ -416,11 +474,56 @@
             graph2Creator();
             graph3Creator();
             graph4Creator();
+            calculateStatistics(values);
+            
          } else {
             alert("Значения настроек не могут быть пустыми");
             throw new Error ("Значения настроек не могут быть пустыми");
          }
       })
+
+      // Функция, которая получает на вход массив и может посчитать мат.ожидание, среднеквадратичное отклонение, дисперсию, Ассиметрию и эксцесс
+      function calculateStatistics(arr) {
+         const n = arr.length;
+         const mean = arr.reduce((acc, val) => acc + val, 0) / n;
+         const variance = arr.reduce((acc, val) => acc + (val - mean) ** 2, 0) / n;
+         const stdDev = Math.sqrt(variance);
+         const skewness = arr.reduce((acc, val) => acc + ((val - mean) / stdDev) ** 3, 0) / n;
+         const excess = arr.reduce((acc, val) => acc + ((val - mean) / stdDev) ** 4, 0) / n - 3;
+
+         for (let i = 0; i < 5; i++) {
+            const calculatedRow = document.createElement('div');
+            calculatedRow.classList.add("calculatedRow");
+            switch (i) {
+               case 0:
+                  calculatedRow.innerHTML = `
+                     ${ mean.toFixed(2) }
+                  `;
+                  break;
+               case 1:
+                  calculatedRow.innerHTML = `
+                     ${ stdDev.toFixed(4) }
+                  `;
+                  break;
+               case 2:
+                  calculatedRow.innerHTML = `
+                     ${ variance.toFixed(4) }
+                  `;
+                  break;
+               case 3:
+                  calculatedRow.innerHTML = `
+                     ${ skewness.toFixed(4) }
+                  `;
+                  break;
+               case 4:
+                  calculatedRow.innerHTML = `
+                     ${ excess.toFixed(4) }
+                  `;
+                  break;
+            }
+            calculatedColumn.appendChild(calculatedRow);
+         }
+      }
 
       // Функция, которая возвращает случайное число от min до max включительно
       function myRandom(min, max) {
