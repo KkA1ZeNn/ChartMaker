@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
    <meta charset="UTF-8">
-   <title>Document</title>
+   <title>Лаб.Работа 1</title>
    <style>
       .settingBar {
          width: 100%;
@@ -250,7 +250,6 @@
       <button id = "generate">Генерация</button>
    </div>
 
-   </div>
    <div id = "workspace">
       <div id = "generatedValues">
          <div id = "description">
@@ -297,6 +296,7 @@
    </div>
 
    <script>
+      // Переменные всяких элементов из HTML
       const generationMethod = document.querySelector('#methods');
       const generateButton = document.querySelector('#generate');
       const clearButton = document.querySelector('#clear');
@@ -307,67 +307,20 @@
       const generatorOptionDescret = document.querySelector('#descret');
       const valuesBar = document.querySelector('#values');
       const calculatedColumn = document.querySelector('#secondColumn');
+
+      // Переменные для построения графиков: values -  массив со значениями Х из выборки, остальные два нужны для построения дискретного метода
       let values = [];
       let Xi = [];
       let Pi = [];
-      let emptyFlag = true;
 
-      clearButton.addEventListener('click', clear);
+      // Переменные 4х графиков и массива в котором будут храниться значения всех чисел и их повторений
+      let root; 
+      let root2;
+      let root3;
+      let root4;
+      let numbersCount;
 
-      function clear() {
-         generationMethod.selectedIndex = 0;
-         generatorOptionQ.value = "";
-         generatorOptionM.value = "";
-         generatorOptionAlpha.value = "";
-         generationCount.value = "100";
-         emptyFlag = true;
-         if (root) {
-            root.dispose();
-            root2.dispose();
-            root3.dispose();
-            root4.dispose();
-         }
-      }
-
-      generationMethod.addEventListener('change', () => {
-         switch (generationMethod.value) {
-            case "1.1 Бернулли":
-               generatorOptionQ.style.display = "block";
-               generatorOptionM.style.display = "none";
-               generatorOptionAlpha.style.display = "none";
-               generatorOptionDescret.style.display = "none";
-               break;
-
-            case "1.2 Биномиальное":
-               generatorOptionQ.style.display = "block";
-               generatorOptionM.style.display = "block";
-               generatorOptionAlpha.style.display = "none";
-               generatorOptionDescret.style.display = "none";
-               break;
-
-            case "1.3 Пуассона":
-               generatorOptionAlpha.style.display = "block";
-               generatorOptionQ.style.display = "none";
-               generatorOptionM.style.display = "none";
-               generatorOptionDescret.style.display = "none";
-               break;
-
-            case "1.4 Дискретное":
-               generatorOptionAlpha.style.display = "none";
-               generatorOptionQ.style.display = "none";
-               generatorOptionM.style.display = "none";
-               generatorOptionDescret.style.display = "none";
-               break;
-
-            default:
-               generatorOptionQ.style.display = "none";
-               generatorOptionM.style.display = "none";
-               generatorOptionAlpha.style.display = "none";
-               generatorOptionDescret.style.display = "none";
-               break;
-         }
-   });
-
+      // Обработчик кнопки генерации
       generateButton.addEventListener('click', () => {
          if (generationMethod.value !== "" && generationCount.value !== "") {
             generatorOptionDescret.style.display = "flex";
@@ -384,12 +337,11 @@
                   if (typeof q !== "number" || q < 0 || q > 1 || generatorOptionQ.value == "") {
                      alert ("Q должно быть числом от 0 до 1");
                      throw new Error ("Q должно быть числом от 0 до 1");
-                     
                   }
 
                   for (let i = 0; i < generationCount.value; i++) {
                      newValue = bernoulli(q);
-                     values.push ( newValue );
+                     values.push(newValue);
                   }
                   break;
 
@@ -399,7 +351,6 @@
                   if (typeof q !== "number" || q < 0 || q > 1 || generatorOptionQ.value == "") {
                      alert ("Q должно быть числом от 0 до 1");
                      throw new Error ("Q должно быть числом от 0 до 1");
-                     
                   }
                   if (typeof m !== "number" || m < 0 || generatorOptionM.value == "") {
                      alert ("M должно быть числом больше 0");
@@ -408,7 +359,7 @@
 
                   for (let i = 0; i < generationCount.value; i++) {
                      newValue = binomial(m, q);
-                     values.push ( newValue );
+                     values.push(newValue);
                   }
                   break;
 
@@ -417,11 +368,10 @@
                   if (typeof lambda !== "number" || lambda < 0 || generatorOptionAlpha.value == "") {
                      alert ("Lamda должно быть числом больше 0");
                      throw new Error ("Lamda должно быть числом больше 0");
-                     
                   }
                   for (let i = 0; i < generationCount.value; i++) {
                      newValue = poisson(lambda);
-                     values.push ( newValue );
+                     values.push(newValue);
                   }
                   break;
 
@@ -469,7 +419,7 @@
                valuesBar.appendChild(valueRow);
             }
 
-            temp = countOccurrences(values);
+            numbersCount = countOccurrences(values);
             graph1Creator();
             graph2Creator();
             graph3Creator();
@@ -482,56 +432,12 @@
          }
       })
 
-      // Функция, которая получает на вход массив и может посчитать мат.ожидание, среднеквадратичное отклонение, дисперсию, Ассиметрию и эксцесс
-      function calculateStatistics(arr) {
-         const n = arr.length;
-         const mean = arr.reduce((acc, val) => acc + val, 0) / n;
-         const variance = arr.reduce((acc, val) => acc + (val - mean) ** 2, 0) / n;
-         const stdDev = Math.sqrt(variance);
-         const skewness = arr.reduce((acc, val) => acc + ((val - mean) / stdDev) ** 3, 0) / n;
-         const excess = arr.reduce((acc, val) => acc + ((val - mean) / stdDev) ** 4, 0) / n - 3;
 
-         for (let i = 0; i < 5; i++) {
-            const calculatedRow = document.createElement('div');
-            calculatedRow.classList.add("calculatedRow");
-            switch (i) {
-               case 0:
-                  calculatedRow.innerHTML = `
-                     ${ mean.toFixed(2) }
-                  `;
-                  break;
-               case 1:
-                  calculatedRow.innerHTML = `
-                     ${ stdDev.toFixed(4) }
-                  `;
-                  break;
-               case 2:
-                  calculatedRow.innerHTML = `
-                     ${ variance.toFixed(4) }
-                  `;
-                  break;
-               case 3:
-                  calculatedRow.innerHTML = `
-                     ${ skewness.toFixed(4) }
-                  `;
-                  break;
-               case 4:
-                  calculatedRow.innerHTML = `
-                     ${ excess.toFixed(4) }
-                  `;
-                  break;
-            }
-            calculatedColumn.appendChild(calculatedRow);
-         }
-      }
+      //----------------------------------------------------------------------------------Дальше будут функции разных методов генерации
 
-      // Функция, которая возвращает случайное число от min до max включительно
-      function myRandom(min, max) {
-         return Math.floor(Math.random() * (max - min + 1) + min);
-      }
 
       // Функция, которая возвращает биномиально распределенное случайное число
-      // n - количество испытаний, p - вероятность успеха
+      // n - количество испытаний, q - вероятность успеха
       function binomial(n, q) {
          let k = 0;
          // Повторяем n раз
@@ -545,18 +451,6 @@
          }
          // Возвращаем счетчик успехов
          return k;
-      }
-
-      // Функция, которая возвращает факториал числа n
-      function factorial(n) {
-         // Если n равно 0 или 1, то возвращаем 1
-         if (n === 0 || n === 1) {
-            return 1;
-         }
-         // Иначе, возвращаем произведение n и факториала n-1
-         else {
-            return n * factorial(n - 1);
-         }
       }
 
       // Функция, которая возвращает биномиальный коэффициент
@@ -573,6 +467,7 @@
          return binomialCoefficient(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
       }
 
+      // Фунция генерации чисел для выборки методом Бернулли
       function bernoulli (q) {
          // Генерируем случайное число от 0 до 1
          let random = Math.random ();
@@ -601,7 +496,7 @@
          return k;
       }
       
-      // Функция, которая возвращает биномиальную вероятность
+      // Функция, которая возвращает Пуассоновскую вероятность
       // k - количество событий, lambda - интенсивность события, n - количество испытаний
       function poissonProbability(k, lambda) {
          // Возвращаем произведение степени lambda n, факториала k и экспоненты отрицательного lambda n
@@ -636,13 +531,12 @@
          // Возвращаем элемент из X по найденному индексу
          return X[index];
       }
-      //-------------------------------------------------------------------------
-      let root; 
-      let root2;
-      let root3;
-      let root4;
-      let temp;
+
+
+      //----------------------------------------------------------------------------------Дальше будут функции построения графиков
   
+
+      // Построение 1го графика (левый верхний)
       function graph1Creator() {
          // Define data
          let data = [];
@@ -665,6 +559,7 @@
             }) 
          );
 
+         // Формирование данных для построения графика
          for (let i = 0; i < values.length; ++i) {
             data.push({
                K: i + 1,
@@ -716,6 +611,7 @@
          series.data.setAll(data);
       }
    
+      // Построение 2го графика (правый верхний)
       function graph2Creator() {
          // Define data
          let data = [];
@@ -738,11 +634,12 @@
                layout: root.verticalLayout
             }) 
          );
-
-         for (key in temp) {
+         
+         // Формирование данных для построения графика
+         for (key in numbersCount) {
             data.push({
                "number": parseInt(key),
-               "value": temp[key]
+               "value": numbersCount[key]
             });
          }
 
@@ -797,6 +694,7 @@
          series.set("stroke", am5.color(0xff8C00));
       }
 
+      // Построение 3го графика (левый нижний)
       function graph3Creator() {
          // Define data
          let data = [];
@@ -822,10 +720,11 @@
             }) 
          );
 
+         // Формирование данных для построения графика
          switch (generationMethod.value) {
             case "1.1 Бернулли":
-               for (key in temp) {
-                  otnValue = temp[key] / parseInt(generationCount.value);
+               for (key in numbersCount) {
+                  otnValue = numbersCount[key] / parseInt(generationCount.value);
                   if (parseInt(key) == 1) {
                      teorValue = parseFloat(generatorOptionQ.value);
                   } else {
@@ -840,8 +739,8 @@
                break;
 
             case "1.2 Биномиальное":
-               for (key in temp) {
-                  otnValue = temp[key] / parseInt(generationCount.value);
+               for (key in numbersCount) {
+                  otnValue = numbersCount[key] / parseInt(generationCount.value);
                   teorValue = binomialProbability( parseFloat( generatorOptionM.value), parseFloat( generatorOptionQ.value), parseInt(key) );
                   data.push({
                      "number": parseInt(key),
@@ -852,8 +751,8 @@
                break;
 
             case "1.3 Пуассона":
-               for (key in temp) {
-                  otnValue = temp[key] / parseInt(generationCount.value);
+               for (key in numbersCount) {
+                  otnValue = numbersCount[key] / parseInt(generationCount.value);
                   teorValue = poissonProbability( parseInt(key), parseFloat(generatorOptionAlpha.value) );
                   data.push({
                      "number": parseInt(key),
@@ -864,8 +763,8 @@
                break;
 
             case "1.4 Дискретное":
-               for (key in temp) {
-                  otnValue = temp[key] / parseInt(generationCount.value);
+               for (key in numbersCount) {
+                  otnValue = numbersCount[key] / parseInt(generationCount.value);
                   let index = Xi.indexOf( parseInt(key) );
                   teorValue = Pi[index];
                   data.push({
@@ -948,6 +847,7 @@
          series.set("stroke", am5.color(0xff8C00));
       }
 
+      // Построение 4го графика (правый нижний)
       function graph4Creator() {
          // Define data
          let data = [];
@@ -972,8 +872,9 @@
             }) 
          );
 
-         for (key in temp) {
-            otnValue = temp[key] / parseInt(generationCount.value) + lastValue;
+         // Формирование данных для построения графика
+         for (key in numbersCount) {
+            otnValue = numbersCount[key] / parseInt(generationCount.value) + lastValue;
             lastValue = otnValue;
             data.push({
                "number": parseInt(key),
@@ -1037,12 +938,135 @@
          series.set("stroke", am5.color(0xFFD700));
       }
 
+
+      //----------------------------------------------------------------------------------Дальше будут просто вспомогательные функции
+
+
+      // Функция подсчета повторяющегося значения в массиве
       function countOccurrences(arr) {
          return arr.reduce((acc, curr) => {
             acc[curr] ? acc[curr]++ : (acc[curr] = 1);
             return acc;
          }, {});
       }
+
+      // Функция очистки всех полей настроек и удаления графиков
+      function clear() {
+         generationMethod.selectedIndex = 0;
+         generatorOptionQ.value = "";
+         generatorOptionM.value = "";
+         generatorOptionAlpha.value = "";
+         generationCount.value = "100";
+         if (root) {
+            root.dispose();
+            root2.dispose();
+            root3.dispose();
+            root4.dispose();
+         }
+      }
+
+            // Функция, которая получает на вход массив и может посчитать мат.ожидание, среднеквадратичное отклонение, дисперсию, Ассиметрию и эксцесс
+      function calculateStatistics(arr) {
+         const n = arr.length;
+         const mean = arr.reduce((acc, val) => acc + val, 0) / n;
+         const variance = arr.reduce((acc, val) => acc + (val - mean) ** 2, 0) / n;
+         const stdDev = Math.sqrt(variance);
+         const skewness = arr.reduce((acc, val) => acc + ((val - mean) / stdDev) ** 3, 0) / n;
+         const excess = arr.reduce((acc, val) => acc + ((val - mean) / stdDev) ** 4, 0) / n - 3;
+
+         for (let i = 0; i < 5; i++) {
+            const calculatedRow = document.createElement('div');
+            calculatedRow.classList.add("calculatedRow");
+            switch (i) {
+               case 0:
+                  calculatedRow.innerHTML = `
+                     ${ mean.toFixed(2) }
+                  `;
+                  break;
+               case 1:
+                  calculatedRow.innerHTML = `
+                     ${ stdDev.toFixed(4) }
+                  `;
+                  break;
+               case 2:
+                  calculatedRow.innerHTML = `
+                     ${ variance.toFixed(4) }
+                  `;
+                  break;
+               case 3:
+                  calculatedRow.innerHTML = `
+                     ${ skewness.toFixed(4) }
+                  `;
+                  break;
+               case 4:
+                  calculatedRow.innerHTML = `
+                     ${ excess.toFixed(4) }
+                  `;
+                  break;
+            }
+            calculatedColumn.appendChild(calculatedRow);
+         }
+      }
+
+      // Функция, которая возвращает случайное целое число от min до max включительно
+      function myRandom(min, max) {
+         return Math.floor(Math.random() * (max - min + 1) + min);
+      }
+
+      // Функция, которая возвращает факториал числа n
+      function factorial(n) {
+         // Если n равно 0 или 1, то возвращаем 1
+         if (n === 0 || n === 1) {
+            return 1;
+         }
+         // Иначе, возвращаем произведение n и факториала n-1
+         else {
+            return n * factorial(n - 1);
+         }
+      }
+
+      // Обработчик событий для реагирования на выбор метода 
+      generationMethod.addEventListener('change', () => {
+         switch (generationMethod.value) {
+            case "1.1 Бернулли":
+               generatorOptionQ.style.display = "block";
+               generatorOptionM.style.display = "none";
+               generatorOptionAlpha.style.display = "none";
+               generatorOptionDescret.style.display = "none";
+               break;
+
+            case "1.2 Биномиальное":
+               generatorOptionQ.style.display = "block";
+               generatorOptionM.style.display = "block";
+               generatorOptionAlpha.style.display = "none";
+               generatorOptionDescret.style.display = "none";
+               break;
+
+            case "1.3 Пуассона":
+               generatorOptionAlpha.style.display = "block";
+               generatorOptionQ.style.display = "none";
+               generatorOptionM.style.display = "none";
+               generatorOptionDescret.style.display = "none";
+               break;
+
+            case "1.4 Дискретное":
+               generatorOptionAlpha.style.display = "none";
+               generatorOptionQ.style.display = "none";
+               generatorOptionM.style.display = "none";
+               generatorOptionDescret.style.display = "none";
+               break;
+
+            default:
+               generatorOptionQ.style.display = "none";
+               generatorOptionM.style.display = "none";
+               generatorOptionAlpha.style.display = "none";
+               generatorOptionDescret.style.display = "none";
+               break;
+         }
+      });
+   
+      // Обработчик кнопки очистки
+      clearButton.addEventListener('click', clear);
    </script>
 </body>
 </html>
