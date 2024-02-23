@@ -642,7 +642,7 @@
          // Create Y-axis
          yAxis = chart.yAxes.push(
             am5xy.ValueAxis.new(root, {
-               strictMinMax: true,
+               min: 0,
                maxPrecision: 0,
                renderer: am5xy.AxisRendererY.new(root, {})
             })
