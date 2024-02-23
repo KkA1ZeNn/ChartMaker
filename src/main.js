@@ -7,6 +7,9 @@ const generatorOptionQ = document.querySelector('#q');
 const generatorOptionM = document.querySelector('#m');
 const generatorOptionAlpha = document.querySelector('#alpha');
 const generatorOptionDescret = document.querySelector('#descret');
+const generatorOptionManualCheckbox = document.querySelector('#manual');
+const generatorOptionManual = document.querySelector('#manual_text');
+const generatorOptionManualDescret = document.querySelector('#manual_descret');
 const valuesBar = document.querySelector('#values');
 const calculatedColumn = document.querySelector('#secondColumn');
 
@@ -21,10 +24,27 @@ let root2;
 let root3;
 let root4;
 let numbersCount;
+let manualFlag = false;
+
+generatorOptionManualCheckbox.addEventListener('change', () => {
+   if (generatorOptionManualCheckbox.checked){
+      generatorOptionManual.style.display = "block";
+      generationCount.disabled = true;
+      manualFlag = true;
+      if (generationMethod.value === "1.4 Дискретное") {
+         generatorOptionManualDescret.style.display = "block";
+      }
+   } else {
+      generatorOptionManual.style.display = "none";
+      generatorOptionManualDescret.style.display = "none";
+      manualFlag = false;
+      generationCount.disabled = false;
+   }
+})
 
 // Обработчик кнопки генерации
 generateButton.addEventListener('click', () => {
-   if (generationMethod.value !== "" && generationCount.value !== "") {
+   if (generationMethod.value !== "" && ( (!manualFlag && generationCount.value !== "") || (manualFlag && generatorOptionManual.value !== "") )) {
       generatorOptionDescret.style.display = "flex";
       valuesBar.innerHTML = ``;
       generatorOptionDescret.innerHTML = ``;
@@ -33,6 +53,9 @@ generateButton.addEventListener('click', () => {
       let descretTemp = [];
       let newValue;
       let q,m,lambda;
+      Xi = [];
+      Pi = [];
+
       switch (generationMethod.value) {
          case "1.1 Бернулли":
             q = parseFloat(generatorOptionQ.value);
@@ -41,9 +64,13 @@ generateButton.addEventListener('click', () => {
                throw new Error ("Q должно быть числом от 0 до 1");
             }
 
-            for (let i = 0; i < generationCount.value; i++) {
-               newValue = bernoulli(q);
-               values.push(newValue);
+            if (manualFlag) {
+               values = generatorOptionManual.value.split(" ").map((element) => {return parseInt(element)});
+            } else {
+               for (let i = 0; i < generationCount.value; i++) {
+                  newValue = bernoulli(q);
+                  values.push(newValue);
+               }
             }
             break;
 
@@ -59,9 +86,13 @@ generateButton.addEventListener('click', () => {
                throw new Error ("M должно быть числом больше 0");
             }
 
-            for (let i = 0; i < generationCount.value; i++) {
-               newValue = binomial(m, q);
-               values.push(newValue);
+            if (manualFlag) {
+               values = generatorOptionManual.value.split(" ").map((element) => {return parseInt(element)});
+            } else {
+               for (let i = 0; i < generationCount.value; i++) {
+                  newValue = binomial(m, q);
+                  values.push(newValue);
+               }
             }
             break;
 
@@ -71,42 +102,68 @@ generateButton.addEventListener('click', () => {
                alert ("Lamda должно быть числом больше 0");
                throw new Error ("Lamda должно быть числом больше 0");
             }
-            for (let i = 0; i < generationCount.value; i++) {
-               newValue = poisson(lambda);
-               values.push(newValue);
+
+            if (manualFlag) {
+               values = generatorOptionManual.value.split(" ").map((element) => {return parseInt(element)});
+            } else {
+               for (let i = 0; i < generationCount.value; i++) {
+                  newValue = poisson(lambda);
+                  values.push(newValue);
+               }
             }
             break;
 
          case "1.4 Дискретное":
-            for (let i = 0; i < 10; ++i) {
-               descretTemp.push( myRandom(1, 10) );
-            }
-
-            let sum = descretTemp.reduce(function(a, b){
-               return a + b;
-            }, 0);
-
             const valueRow = document.createElement('div');
-               valueRow.innerHTML = `
-                  <h5>Xi</h5>
-                  <h5>Pi</h5>
-               `;
-               generatorOptionDescret.appendChild(valueRow);
+            valueRow.innerHTML = `
+               <h5>Xi</h5>
+               <h5>Pi</h5>
+            `;
+            generatorOptionDescret.appendChild(valueRow);
 
-            for (let i = 0; i < 10; ++i) {                 
-               Xi.push( myRandom(1, 40) );
-               Pi.push( parseFloat((descretTemp[i] / sum ).toFixed(3)) );
+            if (manualFlag) {
+               if (generatorOptionManualDescret.value == "") {
+                  alert ("Поле параметров распределения не может быть пустым");
+                  throw new Error ("Поле параметров распределения не может быть пустым");
+               }
+               values = generatorOptionManual.value.split(" ").map((element) => {return parseInt(element)});
+               descretTemp = generatorOptionManualDescret.value.split(" ");
+               for (let i = 0; i < descretTemp.length; ++i) {  
+                  let tempArr = descretTemp[i].split("\t");
+                  Xi.push( parseInt(tempArr[0]) );
+                  Pi.push( parseFloat(tempArr[1].replace(',', '.')) );
 
-               const valueRow = document.createElement('div');
-               valueRow.innerHTML = `
-                  <h5>${ Xi[i] }</h5>
-                  <h5>${ Pi[i] }</h5>
-               `;
-               generatorOptionDescret.appendChild(valueRow);
-            }
-            for (let i = 0; i < generationCount.value; i++) {
-               newValue = discrete(Xi, Pi);
-               values.push ( newValue );
+                  const valueRow = document.createElement('div');
+                  valueRow.innerHTML = `
+                     <h5>${ Xi[i] }</h5>
+                     <h5>${ Pi[i] }</h5>
+                  `;
+                  generatorOptionDescret.appendChild(valueRow);
+               }
+            } else {
+               for (let i = 0; i < 10; ++i) {
+                  descretTemp.push( myRandom(1, 10) );
+               }
+
+               let sum = descretTemp.reduce(function(a, b){
+                  return a + b;
+               }, 0);
+
+               for (let i = 0; i < 10; ++i) {                 
+                  Xi.push( myRandom(1, 40) );
+                  Pi.push( parseFloat((descretTemp[i] / sum ).toFixed(3)) );
+
+                  const valueRow = document.createElement('div');
+                  valueRow.innerHTML = `
+                     <h5>${ Xi[i] }</h5>
+                     <h5>${ Pi[i] }</h5>
+                  `;
+                  generatorOptionDescret.appendChild(valueRow);
+               }
+               for (let i = 0; i < generationCount.value; i++) {
+                  newValue = discrete(Xi, Pi);
+                  values.push ( newValue );
+               }
             }
             break;
       }
@@ -282,7 +339,7 @@ function graph1Creator() {
    xAxis = chart.xAxes.push(
       am5xy.ValueAxis.new(root, {
          min: 1,
-         max: parseInt(generationCount.value),
+         max: values.length,
          renderer: am5xy.AxisRendererX.new(root, {})
       })
    );
@@ -426,7 +483,7 @@ function graph3Creator() {
    switch (generationMethod.value) {
       case "1.1 Бернулли":
          for (key in numbersCount) {
-            otnValue = numbersCount[key] / parseInt(generationCount.value);
+            otnValue = numbersCount[key] / values.length;
             if (parseInt(key) == 1) {
                teorValue = parseFloat(generatorOptionQ.value);
             } else {
@@ -442,7 +499,7 @@ function graph3Creator() {
 
       case "1.2 Биномиальное":
          for (key in numbersCount) {
-            otnValue = numbersCount[key] / parseInt(generationCount.value);
+            otnValue = numbersCount[key] / values.length;
             teorValue = binomialProbability( parseFloat( generatorOptionM.value), parseFloat( generatorOptionQ.value), parseInt(key) );
             data.push({
                "number": parseInt(key),
@@ -454,7 +511,7 @@ function graph3Creator() {
 
       case "1.3 Пуассона":
          for (key in numbersCount) {
-            otnValue = numbersCount[key] / parseInt(generationCount.value);
+            otnValue = numbersCount[key] / values.length;
             teorValue = poissonProbability( parseInt(key), parseFloat(generatorOptionAlpha.value) );
             data.push({
                "number": parseInt(key),
@@ -466,7 +523,7 @@ function graph3Creator() {
 
       case "1.4 Дискретное":
          for (key in numbersCount) {
-            otnValue = numbersCount[key] / parseInt(generationCount.value);
+            otnValue = numbersCount[key] / values.length;
             let index = Xi.indexOf( parseInt(key) );
             teorValue = Pi[index];
             data.push({
@@ -545,8 +602,8 @@ function graph3Creator() {
 
    series.data.setAll(data);
    series2.data.setAll(data);
-   series.set("fill", am5.color(0xff8C00));
-   series.set("stroke", am5.color(0xff8C00));
+   series2.set("fill", am5.color(0xff8C00));
+   series2.set("stroke", am5.color(0xff8C00));
 }
 
 // Построение 4го графика (правый нижний)
@@ -576,7 +633,7 @@ function graph4Creator() {
 
    // Формирование данных для построения графика
    for (key in numbersCount) {
-      otnValue = numbersCount[key] / parseInt(generationCount.value) + lastValue;
+      otnValue = numbersCount[key] / values.length + lastValue;
       lastValue = otnValue;
       data.push({
          "number": parseInt(key),
@@ -658,6 +715,9 @@ function clear() {
    generatorOptionQ.value = "";
    generatorOptionM.value = "";
    generatorOptionAlpha.value = "";
+   generatorOptionManual.value = "";
+   generatorOptionManualDescret.value = "";
+   generatorOptionDescret.innerHTML = ``;
    generationCount.value = "100";
    if (root) {
       root.dispose();
@@ -735,6 +795,7 @@ generationMethod.addEventListener('change', () => {
          generatorOptionM.style.display = "none";
          generatorOptionAlpha.style.display = "none";
          generatorOptionDescret.style.display = "none";
+         generatorOptionManualDescret.style.display = "none";
          break;
 
       case "1.2 Биномиальное":
@@ -742,6 +803,7 @@ generationMethod.addEventListener('change', () => {
          generatorOptionM.style.display = "block";
          generatorOptionAlpha.style.display = "none";
          generatorOptionDescret.style.display = "none";
+         generatorOptionManualDescret.style.display = "none";
          break;
 
       case "1.3 Пуассона":
@@ -749,6 +811,7 @@ generationMethod.addEventListener('change', () => {
          generatorOptionQ.style.display = "none";
          generatorOptionM.style.display = "none";
          generatorOptionDescret.style.display = "none";
+         generatorOptionManualDescret.style.display = "none";
          break;
 
       case "1.4 Дискретное":
@@ -756,6 +819,11 @@ generationMethod.addEventListener('change', () => {
          generatorOptionQ.style.display = "none";
          generatorOptionM.style.display = "none";
          generatorOptionDescret.style.display = "none";
+         if (manualFlag) {
+            generatorOptionManualDescret.style.display = "block";
+         } else {
+            generatorOptionManualDescret.style.display = "none";
+         }
          break;
 
       default:
@@ -763,6 +831,7 @@ generationMethod.addEventListener('change', () => {
          generatorOptionM.style.display = "none";
          generatorOptionAlpha.style.display = "none";
          generatorOptionDescret.style.display = "none";
+         generatorOptionManualDescret.style.display = "none";
          break;
    }
 });
