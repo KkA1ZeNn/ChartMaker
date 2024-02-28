@@ -10,6 +10,7 @@ const generatorOptionDescret = document.querySelector('#descret');
 const generatorOptionManualCheckbox = document.querySelector('#manual');
 const generatorOptionManual = document.querySelector('#manual_text');
 const generatorOptionManualDescret = document.querySelector('#manual_descret');
+const generatorOptionRavnomernoe = document.querySelector('#ravnomernoe');
 const valuesBar = document.querySelector('#values');
 const calculatedColumn = document.querySelector('#secondColumn');
 
@@ -329,7 +330,7 @@ function graph1Creator() {
    // Create Y-axis
    yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
-         strictMinMax: true,
+         min: 0,
          maxPrecision: 0,
          renderer: am5xy.AxisRendererY.new(root, {})
       })
@@ -727,7 +728,7 @@ function clear() {
    }
 }
 
-      // Функция, которая получает на вход массив и может посчитать мат.ожидание, среднеквадратичное отклонение, дисперсию, Ассиметрию и эксцесс
+// Функция, которая получает на вход массив и может посчитать мат.ожидание, среднеквадратичное отклонение, дисперсию, Ассиметрию и эксцесс
 function calculateStatistics(arr) {
    const n = arr.length;
    const mean = arr.reduce((acc, val) => acc + val, 0) / n;
@@ -796,6 +797,7 @@ generationMethod.addEventListener('change', () => {
          generatorOptionAlpha.style.display = "none";
          generatorOptionDescret.style.display = "none";
          generatorOptionManualDescret.style.display = "none";
+         generatorOptionRavnomernoe.style.display = "none";
          break;
 
       case "1.2 Биномиальное":
@@ -804,6 +806,7 @@ generationMethod.addEventListener('change', () => {
          generatorOptionAlpha.style.display = "none";
          generatorOptionDescret.style.display = "none";
          generatorOptionManualDescret.style.display = "none";
+         generatorOptionRavnomernoe.style.display = "none";
          break;
 
       case "1.3 Пуассона":
@@ -812,6 +815,7 @@ generationMethod.addEventListener('change', () => {
          generatorOptionM.style.display = "none";
          generatorOptionDescret.style.display = "none";
          generatorOptionManualDescret.style.display = "none";
+         generatorOptionRavnomernoe.style.display = "none";
          break;
 
       case "1.4 Дискретное":
@@ -824,6 +828,16 @@ generationMethod.addEventListener('change', () => {
          } else {
             generatorOptionManualDescret.style.display = "none";
          }
+         generatorOptionRavnomernoe.style.display = "none";
+         break;
+
+      case "1.2.1 Равномерное":
+         generatorOptionRavnomernoe.style.display = "block";
+         generatorOptionQ.style.display = "none";
+         generatorOptionM.style.display = "none";
+         generatorOptionAlpha.style.display = "none";
+         generatorOptionDescret.style.display = "none";
+         generatorOptionManualDescret.style.display = "none";
          break;
 
       default:
@@ -832,6 +846,7 @@ generationMethod.addEventListener('change', () => {
          generatorOptionAlpha.style.display = "none";
          generatorOptionDescret.style.display = "none";
          generatorOptionManualDescret.style.display = "none";
+         generatorOptionRavnomernoe.style.display = "none";
          break;
    }
 });
