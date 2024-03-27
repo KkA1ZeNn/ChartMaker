@@ -13,5 +13,6 @@
 # Nuances
 PS: В папке src находится весь проект, но разбитый на файлы, а main.html это тот же проект, но здесь все скрипты в одном месте
 PPS: Вся документация по используемой либе для графиков лежит [тут](https://www.amcharts.com/docs/v5/)
+PPS: Остальные лабораторные работы лучше делать на питоне :)) Как выяснилось, это намного легче сделать там.
 
 ![](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWUzdzVndDh6bm5sc2NtZ2ZpcmgyM2ZucG1lZDMzbTl4d3ZmajQzbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qLytYr0b6Fsjj4MyYm/giphy.gif)
