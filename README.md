@@ -17,6 +17,3 @@ PPS: Остальные лабораторные работы лучше дел�
 
 ![](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWUzdzVndDh6bm5sc2NtZ2ZpcmgyM2ZucG1lZDMzbTl4d3ZmajQzbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qLytYr0b6Fsjj4MyYm/giphy.gif)
 
-
-
-
